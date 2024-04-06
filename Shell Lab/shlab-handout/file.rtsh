@@ -1,0 +1,496 @@
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Properly terminate on EOF.
+#
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Properly terminate on EOF.
+#
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process builtin quit command.
+#
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Run a foreground job.
+#
+tsh> quit
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Run a background job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process jobs builtin command.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT to foreground job.
+#
+tsh> ./myspin 
+Job [] () terminated by signal 
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT only to foreground job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () terminated by signal 
+tsh> jobs
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGTSTP only to foreground job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Running ./myspin  &
+[] () Stopped ./myspin  
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process bg builtin command
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Running ./myspin  &
+[] () Stopped ./myspin  
+tsh> bg %
+[] () ./myspin  
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process fg builtin command. 
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> fg %
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./myspin  &
+tsh> fg %
+tsh> jobs
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT to every process in foreground process group
+#
+tsh> ./mysplit 
+Job [] () terminated by signal 
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGTSTP to every process in foreground process group
+#
+tsh> ./mysplit 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mysplit  
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    T      : ./mysplit 
+   pts/    T      : ./mysplit 
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Restart every stopped process in process group
+#
+tsh> ./mysplit 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mysplit  
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    T      : ./mysplit 
+   pts/    T      : ./mysplit 
+   pts/    R      : /bin/ps a
+tsh> fg %
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Simple error handling
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> fg
+fg command requires PID or %jobid argument
+tsh> bg
+bg command requires PID or %jobid argument
+tsh> fg a
+fg: argument must be a PID or %jobid
+tsh> bg a
+bg: argument must be a PID or %jobid
+tsh> fg 
+(): No such process
+tsh> bg 
+(): No such process
+tsh> fg %
+%: No such job
+tsh> fg %
+Job [] () stopped by signal 
+tsh> bg %
+%: No such job
+tsh> bg %
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Putting it all together
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin 
+Job [] () terminated by signal 
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+tsh> fg %
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./myspin  &
+[] () Running ./myspin  &
+tsh> bg %
+%: No such job
+tsh> bg %
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+tsh> fg %
+tsh> quit
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Tests whether the shell can handle SIGTSTP and SIGINT
+#     signals that come from other processes instead of the terminal.
+#
+tsh> ./mystop 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mystop 
+tsh> ./myint 
+Job [] () terminated by signal 
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Properly terminate on EOF.
+#
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process builtin quit command.
+#
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Run a foreground job.
+#
+tsh> quit
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Run a background job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process jobs builtin command.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT to foreground job.
+#
+tsh> ./myspin 
+Job [] () terminated by signal 
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT only to foreground job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () terminated by signal 
+tsh> jobs
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGTSTP only to foreground job.
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Running ./myspin  &
+[] () Stopped ./myspin  
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process bg builtin command
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Running ./myspin  &
+[] () Stopped ./myspin  
+tsh> bg %
+[] () ./myspin  
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Process fg builtin command. 
+#
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> fg %
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./myspin  &
+tsh> fg %
+tsh> jobs
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGINT to every process in foreground process group
+#
+tsh> ./mysplit 
+Job [] () terminated by signal 
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Forward SIGTSTP to every process in foreground process group
+#
+tsh> ./mysplit 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mysplit  
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    T      : ./mysplit 
+   pts/    T      : ./mysplit 
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Restart every stopped process in process group
+#
+tsh> ./mysplit 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mysplit  
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    T      : ./mysplit 
+   pts/    T      : ./mysplit 
+   pts/    R      : /bin/ps a
+tsh> fg %
+tsh> /bin/ps a
+    PID TTY      STAT   TIME COMMAND
+    tty     Ssl+   : /usr/libexec/gdm-wayland-session env GNOME_SHELL_SESSION_MODE=ubuntu /usr/bin/gnome-session --session=ubuntu
+    tty     Sl+    : /usr/libexec/gnome-session-binary --session=ubuntu
+   pts/    Ss     : bash
+   pts/    S+     : tmux
+   pts/    Ss     : -bash
+   pts/    Ss     : -bash
+   pts/    S+     : vim tsh.c
+   pts/    Ss+    : -bash
+   pts/    S+     : /bin/bash ./cmd.sh
+   pts/    S+     : make rtest
+   pts/    S+     : /bin/sh -c ./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+   pts/    S+     : /usr/bin/perl ./sdriver.pl -t trace.txt -s ./tshref -a -p
+   pts/    S+     : ./tshref -p
+   pts/    R      : /bin/ps a
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Simple error handling
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> fg
+fg command requires PID or %jobid argument
+tsh> bg
+bg command requires PID or %jobid argument
+tsh> fg a
+fg: argument must be a PID or %jobid
+tsh> bg a
+bg: argument must be a PID or %jobid
+tsh> fg 
+(): No such process
+tsh> bg 
+(): No such process
+tsh> fg %
+%: No such job
+tsh> fg %
+Job [] () stopped by signal 
+tsh> bg %
+%: No such job
+tsh> bg %
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Putting it all together
+#
+tsh> ./bogus
+./bogus: Command not found
+tsh> ./myspin 
+Job [] () terminated by signal 
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> ./myspin  &
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+tsh> fg %
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./myspin  &
+[] () Running ./myspin  &
+tsh> bg %
+%: No such job
+tsh> bg %
+[] () ./myspin  &
+tsh> jobs
+[] () Running ./myspin  &
+[] () Running ./myspin  &
+tsh> fg %
+tsh> quit
+./sdriver.pl -t trace.txt -s ./tshref -a "-p"
+#
+# trace.txt - Tests whether the shell can handle SIGTSTP and SIGINT
+#     signals that come from other processes instead of the terminal.
+#
+tsh> ./mystop 
+Job [] () stopped by signal 
+tsh> jobs
+[] () Stopped ./mystop 
+tsh> ./myint 
+Job [] () terminated by signal 

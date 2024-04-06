@@ -1,0 +1,20 @@
+#!/bin/bash
+
+executable="./bomb"
+
+
+input_strings=("string1" "string2" "string3")
+
+for input in "${input_strings[@]}"
+do
+	echo "Trying input: $input"
+    output=$("$executable" "$input")
+	    
+	if [ $? -eq 0 ]; then
+	    echo "Success! Output: $output"
+	else
+		echo "Error occurred."
+	fi
+    
+	echo
+done
